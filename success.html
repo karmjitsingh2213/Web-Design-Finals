@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Successful</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #receipt {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Order Successful!</h1>
+        <div id="receipt"></div>
+        <button onclick="goToHomePage()">Back to Home</button>
+    </div>
+    <script>
+        function goToHomePage() {
+            window.location.href = 'index.html';
+        }
+
+        const orderDetails = JSON.parse(localStorage.getItem('orderDetails'));
+        const purchasedProducts = JSON.parse(localStorage.getItem('cart'));
+
+        let receiptContent = '<h2>Order Summary</h2>';
+        if (orderDetails && orderDetails.fullname) {
+            receiptContent += `<p>Thank you, ${orderDetails.fullname}, for your order!</p>`;
+        } else {
+            receiptContent += '<p>Thank you for your order!</p>';
+        }
+        
+        receiptContent += '<h3>Delivery Information:</h3>';
+        if (orderDetails) {
+            for (const key in orderDetails) {
+                if (orderDetails.hasOwnProperty(key) && key !== 'fullname') {
+                    receiptContent += `<p>${key.charAt(0).toUpperCase() + key.slice(1)}: ${orderDetails[key]}</p>`;
+                }
+            }
+        } else {
+            receiptContent += '<p>No delivery information available.</p>';
+        }
+
+        receiptContent += '<h3>Order Details:</h3>';
+        if (purchasedProducts && purchasedProducts.length > 0) {
+            receiptContent += '<ul>';
+            purchasedProducts.forEach(product => {
+                receiptContent += `<li>${product.name}: ${product.price}</li>`;
+            });
+            receiptContent += '</ul>';
+        } else {
+            receiptContent += '<p>No products in the order.</p>';
+        }
+
+        const receiptContainer = document.getElementById('receipt');
+        receiptContainer.innerHTML = receiptContent;
+    </script>
+</body>
+</html>
